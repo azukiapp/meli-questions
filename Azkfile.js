@@ -6,7 +6,7 @@
 systems({
   app: {
     // Dependent systems
-    depends: [],
+    depends: [ "mongodb" ],
     // More images:  http://images.azk.io
     image: {"docker": "azukiapp/node:0.12"},
     // Steps to execute before running instances
@@ -15,14 +15,17 @@ systems({
     ],
     workdir: "/azk/#{manifest.dir}/app",
     shell: "/bin/bash",
-    command: "npm start",
-    wait: {"retry": 20, "timeout": 1000},
+    command: "sails lift --port $HTTP_PORT",
+    wait: {"retry": 20, "timeout": 10000},
     mounts: {
       '/azk/#{manifest.dir}/app': path("./app"),
     },
     scalable: {"default": 2},
     http: {
       domains: [ "#{system.name}.#{azk.default_domain}" ]
+    },
+    ports: {
+      http: "49175",
     },
     envs: {
       // set instances variables
@@ -32,7 +35,7 @@ systems({
   },
   auth: {
     // Dependent systems
-    depends: [],
+    depends: [ "app" ],
     // More images:  http://images.azk.io
     image: {"docker": "azukiapp/ruby"},
     // Steps to execute before running instances
