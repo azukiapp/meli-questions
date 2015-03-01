@@ -1,0 +1,9 @@
+<% if devise_mapping.omniauthable? %>
+  <% resource_class.omniauth_providers.each do |provider| %>
+    Login with:
+    <%=link_to(user_omniauth_authorize_path(provider), class: "btn btn-lg btn-block #{provider}") do %>
+      <i class="fa fa-#{provider}"></i>
+      <span class="string"><%= provider.to_s.titleize %></span>
+    <% end %>
+  <% end %>
+<% end %>
