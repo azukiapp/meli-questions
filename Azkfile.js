@@ -15,17 +15,17 @@ systems({
     ],
     workdir: "/azk/#{manifest.dir}/app",
     shell: "/bin/bash",
-    command: "sails lift --port $HTTP_PORT",
-    wait: {"retry": 20, "timeout": 10000},
+    command: "npm start",
+    wait: {"retry": 20, "timeout": 5000},
     mounts: {
       '/azk/#{manifest.dir}/app': path("./app"),
     },
-    scalable: {"default": 2},
+    scalable: {"default": 1},
     http: {
       domains: [ "#{system.name}.#{azk.default_domain}" ]
     },
     ports: {
-      http: "49175",
+      http: "3000",
     },
     envs: {
       // set instances variables
