@@ -71,7 +71,7 @@ class User
           user.uid              = auth.uid
           user.token            = auth.credentials.token
           user.refresh_token    = auth.credentials.refresh_token
-          user.token_expires_at = auth.credentials.token_expires_at
+          user.token_expires_at = auth.credentials.expires_at.to_i
 
           user.save!
         end
