@@ -1,2 +1,4 @@
 .azk
-babel.json
+.env
+questions/node_modules
+questions/.env

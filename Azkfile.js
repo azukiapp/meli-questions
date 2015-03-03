@@ -4,38 +4,33 @@
 
 // Adds the systems that shape your system
 systems({
-  "koa-app": {
-    // Dependent systems
-    depends: [ "mongodb" ],
-    // More images:  http://images.azk.io
+  "questions": {
+    depends: [ "auth" ],
     image: {"docker": "azukiapp/node:0.12"},
-    // Steps to execute before running instances
     provision: [
       "npm install",
     ],
-    workdir: "/azk/#{manifest.dir}/koa-app",
+    workdir: "/azk/#{manifest.dir}/#{system.name}",
     shell: "/bin/bash",
     command: "npm start",
-    wait: {"retry": 20, "timeout": 5000},
+    wait: {"retry": 10, "timeout": 1000},
     mounts: {
-      '/azk/#{manifest.dir}/koa-app': path("./koa-app"),
+      '/azk/#{manifest.dir}/#{system.name}': path("#{system.name}"),
+      '/azk/#{manifest.dir}/#{system.name}/node_modules': persistent('node_modules'),
     },
-    scalable: {"default": 1},
     http: {
       domains: [ "#{system.name}.#{azk.default_domain}" ]
-    },
-    ports: {
-      http: "3000",
     },
     envs: {
       // set instances variables
       NODE_ENV: "dev",
-      PATH: "/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/azk/#{manifest.dir}/koa-app/node_modules/.bin",
+      PATH: "/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/azk/#{manifest.dir}/#{system.name}/node_modules/.bin",
     },
   },
+
   auth: {
     // Dependent systems
-    depends: [ "mongodb", "mail" ],
+    depends: [ "mongodb" ],
     // More images:  http://images.azk.io
     image: {"docker": "azukiapp/ruby"},
     // Steps to execute before running instances
@@ -45,7 +40,6 @@ systems({
     workdir: "/azk/#{manifest.dir}/auth",
     shell: "/bin/bash",
     command: "bundle exec rails server --pid /tmp/rails.pid --port $HTTP_PORT --binding 0.0.0.0",
-    // command: "bundle exec rackup config.ru --pid /tmp/rails.pid --port $HTTP_PORT --host 0.0.0.0",
     wait: {"retry": 20, "timeout": 1000},
     mounts: {
       '/azk/bundler': persistent("bundler"),
@@ -59,6 +53,8 @@ systems({
       // set instances variables
       RAILS_ENV: "development",
       BUNDLE_APP_CONFIG: "/azk/bundler",
+      MERCADOLIBRE_APP_ID: "[set yours app id in .env]",
+      MERCADOLIBRE_APP_SECRET: "[set yours app secret in .env]"
     },
   },
   mongodb: {
@@ -77,27 +73,14 @@ systems({
       // equivalent persistent_folders
       '/data/db'          : persistent('mongodb-#{manifest.dir}'), // Volume nomed
     },
+    wait: {"retry": 20, "timeout": 1000},
     export_envs        : {
       MONGODB_URI: "mongodb://#{net.host}:#{net.port[27017]}/#{manifest.dir}_development",
     },
   },
-  mail: {
-    image : { docker: "kdihalas/mail" },
-    scalable : false,
-    http : {
-      domains: [ "#{manifest.dir}-#{system.name}.#{azk.default_domain}" ],
-    },
-    ports              : {
-      smtp : "25:25/tcp",
-      http : "1080/tcp"
-    },
-    export_envs: {
-      MAIL_PORT: "#{net.port.smtp}",
-    },
-  },
   ngrok: {
     // Dependent systems
-    depends: ["koa-app"],
+    depends: [],
     image : { docker: "gullitmiranda/docker-ngrok" },
     // Mounts folders to assigned paths
     mounts: {
