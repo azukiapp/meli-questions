@@ -97,7 +97,7 @@ systems({
   },
   ngrok: {
     // Dependent systems
-    depends: ["app"],
+    depends: ["koa-app"],
     image : { docker: "gullitmiranda/docker-ngrok" },
     // Mounts folders to assigned paths
     mounts: {

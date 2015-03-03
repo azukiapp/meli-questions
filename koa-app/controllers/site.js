@@ -3,11 +3,7 @@
 //Site controller
 module.exports = {
   index: function * () {
-    var User = this.models.users;
-    var session = this.session;
-    var user_id = session['warden.user.user.key'][0][0];
-
-    var user = yield User.findOne(user_id);
+    var user = this.models.users.current(this.session);
 
     yield this.render('site/index', { user: user });
   },

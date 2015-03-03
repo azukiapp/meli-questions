@@ -25,6 +25,7 @@
     "q": "^1.2.0",
     "rails-session-decoder": "nuxlli/rails-session-decoder",
     "sails-mongo": "0.10.*",
+    "simple-api-client": "^0.6.0",
     "thunkify": "2.x.x",
     "waterline": "0.10.*"
   },

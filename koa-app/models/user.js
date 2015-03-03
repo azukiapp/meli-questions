@@ -35,6 +35,14 @@ var User = Waterline.Collection.extend({
     //   return [this.first_name, this.last_name].join('\s');
     // }
   },
+  current: function * (session) {
+    if (!session) { return null; }
+
+    var user_id = session['warden.user.user.key'][0][0];
+    var user = yield this.findOne(user_id);
+
+    return user;
+  }
 });
 
 module.exports = User;

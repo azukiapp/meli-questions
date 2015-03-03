@@ -10,9 +10,9 @@ var DEBUG = env !== 'production';
 module.exports = {
   //http://koajs.com/#application
   name: "koa-app",
-  keys: ['b2fef13fc9e78cbd3aa0463c779a977c3850058a', '_meli_session'],
-  secret: 'ef3ec891066cdbcff86f83f28a36fdae184d2560834c38c243d94ef637237f1b' +
-          '33703174ec0a0ada50c12f1e5eae73fddff24ea5580b0bdd511753f792f9e789',
+  // keys: ['b2fef13fc9e78cbd3aa0463c779a977c3850058a', '_meli_session'],
+  // secret: 'ef3ec891066cdbcff86f83f28a36fdae184d2560834c38c243d94ef637237f1b' +
+  //         '33703174ec0a0ada50c12f1e5eae73fddff24ea5580b0bdd511753f792f9e789',
   env: env,
   port: port,
   //https://github.com/koajs/static#options
@@ -27,6 +27,7 @@ module.exports = {
     signed: false,
     secret: 'ef3ec891066cdbcff86f83f28a36fdae184d2560834c38c243d94ef637237f1b' +
             '33703174ec0a0ada50c12f1e5eae73fddff24ea5580b0bdd511753f792f9e789',
+    domain: "all",
     // cookie: {
     //   signed: false,
     //   // maxAge: 1000 * 60 * 60 * 24 //24 hours
