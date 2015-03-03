@@ -4,7 +4,7 @@
 
 // Adds the systems that shape your system
 systems({
-  "questions": {
+  questions: {
     depends: [ "auth" ],
     image: {"docker": "azukiapp/node:0.12"},
     provision: [
@@ -26,6 +26,9 @@ systems({
       NODE_ENV: "dev",
       PATH: "/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/azk/#{manifest.dir}/#{system.name}/node_modules/.bin",
     },
+    export_envs: {
+      APP_URL: "#{system.name}.#{azk.default_domain}:#{net.port.http}"
+    }
   },
 
   auth: {
@@ -57,6 +60,7 @@ systems({
       MERCADOLIBRE_APP_SECRET: "[set yours app secret in .env]"
     },
   },
+
   mongodb: {
     image : { docker: "dockerfile/mongodb" },
     command : 'mongod --rest --httpinterface',
@@ -78,18 +82,21 @@ systems({
       MONGODB_URI: "mongodb://#{net.host}:#{net.port[27017]}/#{manifest.dir}_development",
     },
   },
+
   ngrok: {
     // Dependent systems
-    depends: [],
+    depends: [ "questions" ],
     image : { docker: "gullitmiranda/docker-ngrok" },
     // Mounts folders to assigned paths
     mounts: {
       // equivalent persistent_folders
-      '/#{system.name}' : path("./log"),
+      '/#{system.name}.sh'  : path("./#{system.name}.sh"),
+      '/#{system.name}/log' : path("./log"),
     },
-    scalable: { default: 0,  limit: 1 }, // disable auto start
+    command: "/#{system.name}.sh",
+    scalable: { default: 1,  limit: 1 }, // disable auto start
     // not expect application response
-    wait: false,
+    wait: {"retry": 20, "timeout": 1000},
     http      : {
       domains: [ "#{manifest.dir}-#{system.name}.#{azk.default_domain}" ],
     },
@@ -97,6 +104,7 @@ systems({
       http : "4040"
     },
     envs      : {
+      NGROK_CONFIG    : "/ngrok/ngrok.yml",
       NGROK_LOG       : "/#{system.name}/log/ngrok.log",
       NGROK_SUBDOMAIN : "meli-demo",
       NGROK_AUTH      : "ehXzJi7CGRc8jj74W1Ed",
