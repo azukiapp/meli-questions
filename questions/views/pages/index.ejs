@@ -6,14 +6,27 @@
 <script>
   var socket = io.connect();
   socket.on('questions', function (data) {
-    $('ul').append('<li>' + data.text + '</li>');
+  	var li   = '<li>' + data.text + '</li>';
+    var item = $('#' + data.item_id );
+
+    if (item.length == 0) {
+    	$('#items').append('<h2>Item id:' + data.item_id + "</h2>");
+    	$('#items').append('<ul id="' + data.item_id + '">' + li + '</ul>');
+    } else {
+    	item.append(li);
+    }
   });
 </script>
 
 <a href="/logout"> Sair </a>
 
-<ul>
-<% for(var i = 0; i < questions.length; i++ ) { %>
-   <li><%= questions[i].text %></li>
-<% } %>
-</ul>
+<div id="items"> 
+	<% Object.keys(items).forEach(function(item_id) { %>
+		<h2>Item id: <%= item_id %> </h2>
+		<ul id="<%= item_id %>">
+		<% for(var i = 0; i < items[item_id].length; i++ ) { %>
+		   <li><%= items[item_id][i].text %></li>
+		<% } %>
+		</ul>
+	<% }) %>
+</div>

@@ -64,9 +64,11 @@ app.get('/', function (req, res) {
   }
 
   Meli.questions(session['mercadolibre.credentials'].token)
-    .spread(function(response, body) {
-      res.render('pages/index', { questions: body.questions });
+    .then(function(items) {
+      console.log('items', items);
+      res.render('pages/index', { items: items });
     }, function(err) {
+      console.log(err);
       res.render('pages/index');
     });
 });
