@@ -1,7 +1,5 @@
 {
    "excludeFiles": [
-      "app/node_modules/**",
-      "app/.tmp",
       ".jscsrc/**",
       "Azkfile.js"
     ],
