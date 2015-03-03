@@ -1,5 +1,6 @@
 {
    "excludeFiles": [
+      "koa-app/node_modules/**",
       ".jscsrc/**",
       "Azkfile.js"
     ],

@@ -4,6 +4,35 @@
 
 // Adds the systems that shape your system
 systems({
+  "koa-app": {
+    // Dependent systems
+    depends: [ "mongodb" ],
+    // More images:  http://images.azk.io
+    image: {"docker": "azukiapp/node:0.12"},
+    // Steps to execute before running instances
+    provision: [
+      "npm install",
+    ],
+    workdir: "/azk/#{manifest.dir}/koa-app",
+    shell: "/bin/bash",
+    command: "npm start",
+    wait: {"retry": 20, "timeout": 5000},
+    mounts: {
+      '/azk/#{manifest.dir}/koa-app': path("./koa-app"),
+    },
+    scalable: {"default": 1},
+    http: {
+      domains: [ "#{system.name}.#{azk.default_domain}" ]
+    },
+    ports: {
+      http: "3000",
+    },
+    envs: {
+      // set instances variables
+      NODE_ENV: "dev",
+      PATH: "/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/azk/#{manifest.dir}/koa-app/node_modules/.bin",
+    },
+  },
   auth: {
     // Dependent systems
     depends: [ "mongodb", "mail" ],
