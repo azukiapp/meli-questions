@@ -1,10 +1,10 @@
-// var proxy   = require('proxy-middleware');
 var proxy = require('express-http-proxy');
 var express = require('express');
 var fs      = require('fs');
 var url     = require('url');
 var _       = require('lodash');
 var Meli    = require('./lib/meli');
+var bodyParser = require('body-parser')
 
 // Configs
 var PORT     = process.env.HTTP_PORT || 3000;
@@ -20,12 +20,17 @@ if (process.env.DATABASE_URL) {
 }
 
 // App
-var app = express();
+var app    = express();
+var server = require('http').Server(app);
+var io     = require('socket.io')(server);
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 
 /// middleware
+
+// parse application/json
+app.use(bodyParser.json())
 
 // simple logger
 app.use(function(req, res, next){
@@ -60,15 +65,19 @@ app.get('/', function (req, res) {
 
   Meli.questions(session['mercadolibre.credentials'].token)
     .spread(function(response, body) {
-      console.log(body);
       res.render('pages/index', { questions: body.questions });
     }, function(err) {
-      console.log(err);
       res.render('pages/index');
     });
-
-  console.log(req.cookies['_session']); // Rails session cookie 
 });
 
-app.listen(PORT);
+app.post('/webhooks', function(req, res) {
+  Meli.get(req.body.resource)
+    .spread(function(response, body) {
+      io.sockets.emit('questions', body);
+    });
+  res.send("ok");
+});
+
+server.listen(PORT);
 console.log('Service %s is already done in port: %s', AZK_UID, PORT);
