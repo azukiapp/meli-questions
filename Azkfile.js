@@ -86,14 +86,13 @@ systems({
   ngrok: {
     // Dependent systems
     depends: [ "questions" ],
-    image : { docker: "gullitmiranda/docker-ngrok" },
+    image : { docker: "azukiapp/ngrok" },
     // Mounts folders to assigned paths
     mounts: {
       // equivalent persistent_folders
       '/#{system.name}.sh'  : path("./#{system.name}.sh"),
       '/#{system.name}/log' : path("./log"),
     },
-    command: "/#{system.name}.sh",
     scalable: { default: 1,  limit: 1 }, // disable auto start
     // not expect application response
     wait: {"retry": 20, "timeout": 1000},
