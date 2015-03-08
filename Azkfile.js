@@ -105,8 +105,6 @@ systems({
     envs      : {
       NGROK_CONFIG    : "/ngrok/ngrok.yml",
       NGROK_LOG       : "/#{system.name}/log/ngrok.log",
-      NGROK_SUBDOMAIN : "meli-demo",
-      NGROK_AUTH      : "ehXzJi7CGRc8jj74W1Ed",
     }
   }
 });
