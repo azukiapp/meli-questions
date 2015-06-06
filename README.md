@@ -38,7 +38,15 @@ Add your environment variables:
 Run the application with:
 
   ```bash
-  $ azk start --open; azk logs --tail
+  $ azk start --open
+  ```
+
+### Logs
+
+Run:
+
+  ```bash
+  azk logs --follow
   ```
 
 ---

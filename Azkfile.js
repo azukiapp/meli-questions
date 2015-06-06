@@ -63,7 +63,7 @@ systems({
 
   mongodb: {
     image : { docker: "azukiapp/mongodb" },
-    command : 'mongod --rest --httpinterface',
+    // command : 'mongod --rest --httpinterface',
     scalable: false,
     ports: {
       http: "28017:28017/tcp",
